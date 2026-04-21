@@ -25,6 +25,13 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
   const supabase = await createClient();
 
+  /* Compare Password and Confirm password fields */
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirm-password") as string;
+  if (password !== confirmPassword) {
+    redirect("/error?message=Passwords do not match");
+  }
+
   const data = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -37,5 +44,5 @@ export async function signup(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect("/profile-setup");
 }
