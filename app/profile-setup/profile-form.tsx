@@ -3,13 +3,13 @@
 import { saveProfile } from "./actions";
 
 type School = {
-  id: number;
+  id: string;
   school_name: string;
 };
 
 type Role = {
-  id: number;
-  parent_role_id: number | null;
+  id: string;
+  parent_role_id: string | null;
   role_name: string;
 };
 
@@ -17,6 +17,7 @@ type AcademicYear = {
   id: number;
   start_year: number;
   end_year: number;
+  display_name: string | null;
 };
 
 interface Props {

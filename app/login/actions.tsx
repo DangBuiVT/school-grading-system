@@ -32,12 +32,17 @@ export async function signup(formData: FormData) {
     redirect("/error?message=Passwords do not match");
   }
 
-  const data = {
+  const signUpData = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
+    options: {
+      data: {
+        phone: formData.get("phone") as string,
+      },
+    },
   };
 
-  const { error } = await supabase.auth.signUp(data);
+  const { data, error } = await supabase.auth.signUp(signUpData);
 
   if (error) {
     redirect("/error");
