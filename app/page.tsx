@@ -52,7 +52,7 @@ export default function HomePage() {
       {/* --- Footer --- */}
       <footer className="border-t bg-white py-8">
         <div className="container mx-auto px-4 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} LMS Connect. Built with Next.js and
+          © {new Date().getFullYear()} Advance LMS. Built with Next.js and
           Supabase.
         </div>
       </footer>
