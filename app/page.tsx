@@ -1,22 +1,22 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createClient } from "@/supabase/server";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isLoggedIn = !!user;
+
+  if (isLoggedIn) {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
+    <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900 font-montserrat">
       {/* --- Navigation Bar --- */}
-      <header className="border-b bg-white">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
-          <div className="text-xl font-bold text-indigo-600">LMS Connect</div>
-          <nav className="flex gap-4">
-            <Link
-              href="/login"
-              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
-            >
-              Log in
-            </Link>
-          </nav>
-        </div>
-      </header>
 
       {/* --- Main Content Area --- */}
       <main className="flex-grow">
@@ -24,8 +24,8 @@ export default function HomePage() {
           {/* Hero Section */}
           <section className="text-center">
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl">
-              Manage Grades with{" "}
-              <span className="text-indigo-600">Precision.</span>
+              Manage your School with{" "}
+              <span className="text-[var(--primary-color)]">Precision.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
               A modern, AI-powered Learning Management System built for the
@@ -34,28 +34,26 @@ export default function HomePage() {
           </section>
 
           {/* --- COMPONENT PLACEHOLDER --- */}
-          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 flex items-center justify-center gap-8">
             {/* You can drop your custom components here to see them side-by-side */}
-            <div className="rounded-xl border-2 border-dashed border-gray-300 p-12 text-center text-gray-400">
-              Feature Component 1
-            </div>
-            <div className="rounded-xl border-2 border-dashed border-gray-300 p-12 text-center text-gray-400">
-              Feature Component 2
-            </div>
-            <div className="rounded-xl border-2 border-dashed border-gray-300 p-12 text-center text-gray-400">
-              Feature Component 3
+            <div className="rounded-xl border-2 border-[var(--secondary-color)] text-black p-10 flex flex-col items-center gap-4 justify-center">
+              <h2 className="text-3xl font-bold text-[var(--secondary-color)]">
+                Notice!
+              </h2>
+              <h4>You have to log in to proceed further.</h4>
+              <h4>Please click the button below to go to the login page.</h4>
+              <Link
+                href="/login"
+                className="bg-[var(--secondary-color)] text-white px-6 py-3 rounded-md font-bold hover:bg-[var(--primary-color)] transition-colors"
+              >
+                Sign In or create an account
+              </Link>
             </div>
           </div>
         </div>
       </main>
 
       {/* --- Footer --- */}
-      <footer className="border-t bg-white py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} Advance LMS. Built with Next.js and
-          Supabase.
-        </div>
-      </footer>
     </div>
   );
 }
