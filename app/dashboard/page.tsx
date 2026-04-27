@@ -1,39 +1,32 @@
+// app/dashboard/page.tsx
 import { createClient } from "@/supabase/server";
-import { redirect } from "next/navigation";
+import TeacherDashboard from "./teacher/TeacherDashboard";
+// import StudentDashboard from "./roles/StudentDashboard";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-
   const {
     data: { user },
+    error: userError,
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/login");
+  if (userError || !user) {
+    console.error("Error fetching user:", userError);
+    return <div className="text-red-500">Failed to load user data.</div>;
   }
 
-  const { data: profile, error } = await supabase
+  // Fetch profile with role name
+  const { data: profile } = await supabase
     .from("users")
-    .select("fname, lname, phone, role_id, school_id")
+    .select("*, roles(role_name)")
     .eq("id", user.id)
-    .maybeSingle();
+    .single();
 
-  if (error || !profile || !profile.fname || !profile.lname || !profile.phone) {
-    redirect("/profile-setup");
-  }
+  const role = profile?.roles?.role_name;
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-10 shadow-lg">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-[var(--secondary-color)] font-montserrat">
-            Welcome to Advance LMS
-          </h2>
-          <p className="mt-2 text-sm text-gray-600 font-montserrat">
-            {`Hello, ${profile?.fname}! This is your dashboard.`}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  // Render the specific dashboard based on the role found in database.ts
+  if (role === "Teacher" && profile) return <TeacherDashboard {...profile} />;
+  // if (role === "Student") return <StudentDashboard profile={profile} />;
+
+  return <div>Please contact admin to assign a role.</div>;
 }

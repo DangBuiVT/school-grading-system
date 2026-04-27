@@ -8,8 +8,8 @@ type School = {
 };
 
 type Role = {
-  id: string;
-  parent_role_id: string | null;
+  id: number;
+  parent_role_id: number | null;
   role_name: string;
 };
 

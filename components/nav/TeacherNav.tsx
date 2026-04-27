@@ -11,8 +11,8 @@ export default function TeacherNav() {
           </a>
         </li>
         <li>
-          <a href="/teacher/classes" className="text-white hover:text-gray-300">
-            My Classes
+          <a href="/weekly-schedule" className="text-white hover:text-gray-300">
+            Schedule
           </a>
         </li>
         <li>
