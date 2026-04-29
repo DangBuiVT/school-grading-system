@@ -3,10 +3,7 @@ export default function TeacherNav() {
     <nav className="flex gap-10 items-center font-montserrat font-bold text-lg h-full">
       <ul className="flex gap-15 items-center">
         <li>
-          <a
-            href="/teacher/dashboard"
-            className="text-white hover:text-gray-300"
-          >
+          <a href="/dashboard" className="text-white hover:text-gray-300">
             Dashboard
           </a>
         </li>
