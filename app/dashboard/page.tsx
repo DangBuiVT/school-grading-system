@@ -1,7 +1,7 @@
 // app/dashboard/page.tsx
 import { createClient } from "@/supabase/server";
-import TeacherDashboard from "./teacher/TeacherDashboard";
-// import StudentDashboard from "./roles/StudentDashboard";
+import TeacherDashboard from "./TeacherDashboard";
+import StudentDashboard from "./StudentDashboard";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -26,7 +26,7 @@ export default async function DashboardPage() {
 
   // Render the specific dashboard based on the role found in database.ts
   if (role === "Teacher" && profile) return <TeacherDashboard {...profile} />;
-  // if (role === "Student") return <StudentDashboard profile={profile} />;
+  if (role === "Student" && profile) return <StudentDashboard {...profile} />;
 
   return <div>Please contact admin to assign a role.</div>;
 }
