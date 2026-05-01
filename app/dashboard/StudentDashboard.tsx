@@ -1,5 +1,6 @@
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
+import { getPeriodFromTime } from "@/components/GetPeriodFromTime";
 
 interface ProfileProps {
   created_at: string | null;
@@ -79,7 +80,7 @@ export default async function StudentDashboard(profile: ProfileProps) {
               {profile.lname + " " + profile.fname}
             </h2>
             <p className="text-sm text-[var(--primary-color)] font-medium mb-6">
-              Student of class {classData.class_name}
+              Student
             </p>
 
             {/* Info Lines from your sketch */}
@@ -88,10 +89,14 @@ export default async function StudentDashboard(profile: ProfileProps) {
                 <span className="text-gray-500 font-montserrat">School:</span>
                 <span className="font-semibold">{schoolData.school_name}</span>
               </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500 font-montserrat">Class:</span>
+                <span className="font-semibold">{classData.class_name}</span>
+              </div>
 
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500 font-montserrat">
-                  Year joined:
+                  Year joined on platform:
                 </span>
                 <span className="font-semibold">
                   {profile.created_at?.slice(0, 4)}
@@ -107,9 +112,12 @@ export default async function StudentDashboard(profile: ProfileProps) {
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-900">Next Classes</h3>
-              <button className="text-sm text-[var(--primary-color)] font-semibold hover:underline">
+              <a
+                href="/weekly-schedule"
+                className="text-sm text-[var(--primary-color)] font-semibold hover:underline"
+              >
                 View Schedule
-              </button>
+              </a>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Sample Class Card */}

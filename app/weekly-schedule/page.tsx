@@ -176,7 +176,13 @@ export default async function WeeklySchedulePage() {
               >
                 <p className="font-bold text-xs">
                   {slot.teachers?.users?.gender === "male" ? "Mr." : "Ms."}{" "}
-                  {slot.teachers?.users?.fname} {slot.teachers?.users?.lname}
+                  {slot.subjects?.subject_name === "English"
+                    ? slot.teachers?.users?.fname +
+                      " " +
+                      slot.teachers?.users?.lname
+                    : slot.teachers?.users?.lname +
+                      " " +
+                      slot.teachers?.users?.fname}
                 </p>
                 <p className="text-sm">{slot.subjects?.subject_name}</p>
               </div>
@@ -269,7 +275,13 @@ export default async function WeeklySchedulePage() {
               >
                 <p className="font-bold text-xs">
                   {slot.teachers?.users?.gender === "male" ? "Mr." : "Ms."}{" "}
-                  {slot.teachers?.users?.fname} {slot.teachers?.users?.lname}
+                  {slot.subjects?.subject_name === "English"
+                    ? slot.teachers?.users?.fname +
+                      " " +
+                      slot.teachers?.users?.lname
+                    : slot.teachers?.users?.lname +
+                      " " +
+                      slot.teachers?.users?.fname}
                 </p>
                 <p className="text-sm">{slot.subjects?.subject_name}</p>
               </div>

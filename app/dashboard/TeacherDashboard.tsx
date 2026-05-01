@@ -1,6 +1,7 @@
 import { PostgrestError } from "@supabase/supabase-js";
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
+import { getPeriodFromTime } from "@/components/GetPeriodFromTime";
 
 interface ProfileProps {
   created_at: string | null;
@@ -53,17 +54,22 @@ export default async function TeacherDashboard(profile: ProfileProps) {
     return <div className="text-red-500">Failed to load teaches data.</div>;
   }
 
+  console.log(teachesData);
+
   const { data: subjectData, error: subjectError } = await supabase
     .from("subjects")
     .select("*")
-    .eq("id", teachesData[0].subject_id)
-    .single();
+    .in(
+      "id",
+      teachesData.map((t) => t.subject_id),
+    );
 
   if (subjectError) {
     console.error("Error fetching subject data:", subjectError);
     return <div className="text-red-500">Failed to load subject data.</div>;
   }
 
+  console.log(subjectData);
   return (
     <div className="p-6 bg-gray-50 min-h-[calc(100vh-80px)] font-montserrat">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -79,7 +85,7 @@ export default async function TeacherDashboard(profile: ProfileProps) {
               {profile.lname + " " + profile.fname}
             </h2>
             <p className="text-sm text-[var(--primary-color)] font-medium mb-6">
-              {subjectData.subject_name} Teacher
+              {subjectData[0].subject_name} Teacher
             </p>
 
             {/* Info Lines from your sketch */}
@@ -107,9 +113,12 @@ export default async function TeacherDashboard(profile: ProfileProps) {
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-900">Next Classes</h3>
-              <button className="text-sm text-[var(--primary-color)] font-semibold hover:underline">
+              <a
+                href="/weekly-schedule"
+                className="text-sm text-[var(--primary-color)] font-semibold hover:underline"
+              >
                 View Schedule
-              </button>
+              </a>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Sample Class Card */}
