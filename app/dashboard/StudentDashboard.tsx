@@ -1,6 +1,7 @@
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
-import { getPeriodFromTime } from "@/components/GetPeriodFromTime";
+import { getNextClassDataAsClass } from "./nextClassData";
+import { dayOfWeekMap } from "@/lib/schedule-config";
 
 interface ProfileProps {
   created_at: string | null;
@@ -65,6 +66,9 @@ export default async function StudentDashboard(profile: ProfileProps) {
     return <div className="text-red-500">Failed to load class data.</div>;
   }
 
+  const nextClassData = await getNextClassDataAsClass(classData.id);
+  const nextClasses = nextClassData?.data ?? [];
+
   return (
     <div className="p-6 bg-gray-50 min-h-[calc(100vh-80px)] font-montserrat">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -112,6 +116,16 @@ export default async function StudentDashboard(profile: ProfileProps) {
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-900">Next Classes</h3>
+              <h4 className="font-bold text-[var(--secondary-color)]">
+                {dayOfWeekMap[nextClassData?.dayOfWeek ?? 0]},{" "}
+                {nextClassData?.presetTime.toLocaleDateString()}
+                {", "}
+                {nextClassData?.presetTime.toLocaleTimeString([], {
+                  hour12: true,
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </h4>
               <a
                 href="/weekly-schedule"
                 className="text-sm text-[var(--primary-color)] font-semibold hover:underline"
@@ -121,17 +135,38 @@ export default async function StudentDashboard(profile: ProfileProps) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Sample Class Card */}
-              <div className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex justify-between items-center">
-                <div>
-                  <p className="font-bold text-gray-800">Class 10A1</p>
-                  <p className="text-xs text-gray-500">
-                    Mathematics • 10:30 AM
-                  </p>
+              {nextClasses.length === 0 ? (
+                <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+                  <p className="text-sm text-gray-600">No more classes</p>
                 </div>
-                <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                  In 15m
-                </span>
-              </div>
+              ) : (
+                nextClasses.map((classItem, index) => (
+                  <div
+                    key={`${classItem?.subjectName ?? "unknown"}-${index}`}
+                    className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-bold text-gray-800">
+                        {classItem?.subjectName}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {classItem?.teacherGender === "male" ? "Mr. " : "Ms. "}
+                        {classItem?.subjectName === "English"
+                          ? (classItem?.teacherFName ?? "") +
+                            " " +
+                            (classItem?.teacherLName ?? "")
+                          : (classItem?.teacherLName ?? "") +
+                            " " +
+                            (classItem?.teacherFName ?? "")}{" "}
+                        • {classItem?.startTime}
+                      </p>
+                    </div>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                      {classItem.countdown || "Upcoming"}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
           </section>
 

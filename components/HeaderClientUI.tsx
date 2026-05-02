@@ -23,7 +23,7 @@ export default function HeaderClientUI({ role }: { role: string }) {
       <header className="bg-[var(--primary-color)] py-4 relative z-50 shadow-md font-montserrat">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">
-            Advance School Management
+            Advance Educational Platform
           </h1>
 
           <div className="flex items-center gap-6">

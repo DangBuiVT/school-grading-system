@@ -13,3 +13,13 @@ export const periodSchedule = {
     { period: 4, start: "15:45", end: "16:30" },
   ],
 };
+
+export const dayOfWeekMap: Record<number, string> = {
+  2: "Monday",
+  3: "Tuesday",
+  4: "Wednesday",
+  5: "Thursday",
+  6: "Friday",
+  7: "Saturday",
+  8: "Sunday",
+};
