@@ -13,10 +13,7 @@ export default function TeacherNav() {
           </a>
         </li>
         <li>
-          <a
-            href="/teacher/gradetable"
-            className="text-white hover:text-gray-300"
-          >
+          <a href="/grades" className="text-white hover:text-gray-300">
             Grades
           </a>
         </li>
