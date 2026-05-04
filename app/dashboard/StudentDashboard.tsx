@@ -69,9 +69,35 @@ export default async function StudentDashboard(profile: ProfileProps) {
   const nextClassData = await getNextClassDataAsClass(classData.id);
   const nextClasses = nextClassData?.data ?? [];
 
+  const { data: topSubjectData } = await supabase
+    .from("student_subject_averages")
+    .select("subject_name, subject_avg")
+    .eq("student_id", profile.id)
+    .order("subject_avg", { ascending: false }) // Sort by highest score
+    .limit(1) // Get only the best one
+    .single();
+
+  // 2. Get the Overall GPA (Average of Averages)
+  const { data: allStats } = await supabase
+    .from("student_subject_averages")
+    .select("subject_avg")
+    .eq("student_id", profile.id);
+
+  if (!topSubjectData || !allStats) {
+    console.error("Error fetching grade statistics");
+    return <div className="text-red-500">Failed to load grade statistics.</div>;
+  }
+
+  const totalGPA = allStats
+    ? (
+        allStats.reduce((acc, curr) => acc + curr.subject_avg, 0) /
+        allStats.length
+      ).toFixed(2)
+    : "0.0";
+
   return (
     <div className="p-6 bg-gray-50 min-h-[calc(100vh-80px)] font-montserrat">
-      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="container mx-auto mt-20 grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: Profile Card (3/12 columns) */}
         <aside className="lg:col-span-4 xl:col-span-3">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
@@ -173,43 +199,42 @@ export default async function StudentDashboard(profile: ProfileProps) {
           {/* SECTION: Attendance Check Summary */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-6">
-              Attendance Quick Check
+              Personal Statistics
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="flex items-center justify-around space-x-40">
               {/* Student Number Input Box from your sketch */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase">
-                  Student Total
-                </label>
-                <div className="text-3xl font-bold bg-gray-100 p-4 rounded-xl text-center border-2 border-dashed border-gray-200">
-                  42
-                </div>
-              </div>
 
               {/* On Time Stat */}
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase">
-                  On Time
+              <div className="flex items-center justify-center space-x-5">
+                <label className="text-sm font-bold text-secondary uppercase">
+                  Overall Average Grade
                 </label>
-                <div className="w-16 h-16 rounded-full border-4 border-green-500 flex items-center justify-center font-bold text-green-600">
-                  38
+                <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center font-bold text-primary text-2xl">
+                  {totalGPA}
                 </div>
               </div>
 
               {/* Late Stat */}
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase">
-                  Late
-                </label>
-                <div className="w-16 h-16 rounded-full border-4 border-orange-400 flex items-center justify-center font-bold text-orange-500">
-                  4
+              <div className="flex items-center justify-center space-x-5">
+                <div className="flex flex-col items-center justify-center space-y-2">
+                  <label className="text-sm font-bold text-secondary uppercase">
+                    Best Subject
+                  </label>
+                  <div className="text-lg font-semibold text-secondary">
+                    {topSubjectData.subject_name}
+                  </div>
+                </div>
+
+                <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center font-bold text-primary text-2xl">
+                  {topSubjectData.subject_avg.toFixed(2)}
                 </div>
               </div>
             </div>
-
             <button className="mt-8 w-full bg-[var(--primary-color)] text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
-              Start Today&apos;s Attendance
+              <a href="/grades" className="block w-full h-full">
+                Open Gradebook
+              </a>
             </button>
           </section>
         </main>

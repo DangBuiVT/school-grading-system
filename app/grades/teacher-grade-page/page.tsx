@@ -50,9 +50,11 @@ subjects(id, subject_name)
     redirect("/error");
   }
 
+  //console.log(teachesData, "Teaches Data for TeacherGradePage");
+
   const { data: studiesData, error: studiesError } = await supabase
     .from("studies")
-    .select("*")
+    .select(`students(users(id, fname, lname)), class_id`)
     .in(
       "class_id",
       teachesData.map((item) => item.classes.id),
@@ -63,32 +65,28 @@ subjects(id, subject_name)
     redirect("/error");
   }
 
-  const { data: studentsData, error: studentsError } = await supabase
-    .from("students")
-    .select(
-      `
-        users (id, fname, lname)
-    `,
-    )
-    .in(
-      "id",
-      studiesData.map((item) => item.student_id),
-    );
+  //console.log(studiesData, "Studies Data for TeacherGradePage");
 
-  if (studentsError || !studentsData) {
-    console.error("Error fetching students data:", studentsError);
-    redirect("/error");
-  }
   const classSubjectPairProps = teachesData.map((item) => ({
+    teacherId: user.id,
     classes: {
       classId: item.classes?.id,
       className: item.classes?.class_name,
+      studentList: studiesData
+        .filter((study) => study.class_id === item.classes?.id)
+        .map((study) => ({
+          studentId: study.students.users.id,
+          studentLName: study.students.users.lname,
+          studentFName: study.students.users.fname,
+        })),
     },
     subjects: {
       subjectId: item.subjects?.id,
       subjectName: item.subjects?.subject_name,
     },
   }));
+
+  //console.log("Combined Props for TableClient:", classSubjectPairProps);
 
   return (
     <div className="flex flex-col bg-[var(--secondary-color)] font-montserrat">

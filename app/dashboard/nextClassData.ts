@@ -20,6 +20,8 @@ export async function getNextClassDataAsTeacher(teacherId: string) {
 
   if (!nextPeriodInfo || nextPeriodInfos.length === 0) return null;
 
+  const shiftType = shift as "morning" | "afternoon";
+
   const periodNumbers = nextPeriodInfos.map((period) => period.period);
 
   // 2. Query the schedule for that specific coordinate (limit to 2)
@@ -35,7 +37,7 @@ export async function getNextClassDataAsTeacher(teacherId: string) {
     .eq("teacher_id", teacherId)
     .eq("day_of_week", dayOfWeek)
     .in("period_number", periodNumbers)
-    .eq("part_of_the_day", shift)
+    .eq("part_of_the_day", shiftType)
     .order("period_number", { ascending: true })
     .limit(2);
 
@@ -85,6 +87,8 @@ export async function getNextClassDataAsClass(classId: string) {
 
   if (!nextPeriodInfo || nextPeriodInfos.length === 0) return null;
 
+  const shiftType = shift as "morning" | "afternoon";
+
   const periodNumbers = nextPeriodInfos.map((period) => period.period);
 
   // 2. Query the schedule for that specific coordinate
@@ -101,7 +105,7 @@ export async function getNextClassDataAsClass(classId: string) {
     .eq("class_id", classId)
     .eq("day_of_week", dayOfWeek)
     .in("period_number", periodNumbers)
-    .eq("part_of_the_day", shift)
+    .eq("part_of_the_day", shiftType)
     .order("period_number", { ascending: true })
     .limit(2);
 

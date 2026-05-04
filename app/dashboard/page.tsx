@@ -2,6 +2,7 @@
 import { createClient } from "@/supabase/server";
 import TeacherDashboard from "./TeacherDashboard";
 import StudentDashboard from "./StudentDashboard";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -28,5 +29,6 @@ export default async function DashboardPage() {
   if (role === "Teacher" && profile) return <TeacherDashboard {...profile} />;
   if (role === "Student" && profile) return <StudentDashboard {...profile} />;
 
-  return <div>Please contact admin to assign a role.</div>;
+  // If role is not recognized, redirect to login or show an error
+  redirect("/profile-setup");
 }

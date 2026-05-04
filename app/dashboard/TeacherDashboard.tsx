@@ -72,7 +72,18 @@ export default async function TeacherDashboard(profile: ProfileProps) {
     return <div className="text-red-500">Failed to load subject data.</div>;
   }
   console.log(nextClassData);
-  // console.log(subjectData);
+
+  const { data: classRankings } = await supabase
+    .from("teacher_class_performance")
+    .select("class_name, class_avg")
+    .eq("teacher_id", profile.id)
+    .order("class_avg", { ascending: false });
+
+  if (!classRankings) {
+    console.error("Error fetching class rankings");
+    return <div className="text-red-500">Failed to load class rankings.</div>;
+  }
+
   const dayOfWeekString =
     dayOfWeekMap[nextClassData?.dayOfWeek ?? 0] || "Unknown Day";
   return (
@@ -166,43 +177,33 @@ export default async function TeacherDashboard(profile: ProfileProps) {
           {/* SECTION: Attendance Check Summary */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-6">
-              Attendance Quick Check
+              Class Rankings
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {/* Student Number Input Box from your sketch */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase">
-                  Student Total
-                </label>
-                <div className="text-3xl font-bold bg-gray-100 p-4 rounded-xl text-center border-2 border-dashed border-gray-200">
-                  42
-                </div>
+            <div className="flex items-center justify-around space-x-40">
+              <div className="w-auto p-6 rounded-4xl border-4 border-[#D4AF37] flex items-center justify-center font-bold text-[#D4AF37] text-2xl">
+                {classRankings[0]?.class_name +
+                  " : " +
+                  classRankings[0]?.class_avg || "N/A"}
               </div>
 
-              {/* On Time Stat */}
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase">
-                  On Time
-                </label>
-                <div className="w-16 h-16 rounded-full border-4 border-green-500 flex items-center justify-center font-bold text-green-600">
-                  38
-                </div>
+              <div className="w-auto p-6 rounded-4xl border-4 border-[#A8A8A8] flex items-center justify-center font-bold text-[#A8A8A8] text-2xl">
+                {classRankings[1]?.class_name +
+                  " : " +
+                  classRankings[1]?.class_avg || "N/A"}
               </div>
 
-              {/* Late Stat */}
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase">
-                  Late
-                </label>
-                <div className="w-16 h-16 rounded-full border-4 border-orange-400 flex items-center justify-center font-bold text-orange-500">
-                  4
-                </div>
+              <div className="w-auto p-6 rounded-4xl border-4 border-[#CD7F32] flex items-center justify-center font-bold text-[#CD7F32] text-2xl">
+                {classRankings[2]?.class_name +
+                  " : " +
+                  classRankings[2]?.class_avg || "N/A"}
               </div>
             </div>
 
             <button className="mt-8 w-full bg-[var(--primary-color)] text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
-              Start Today&apos;s Attendance
+              <a href="/grades" className="block w-full h-full">
+                Open Gradebook
+              </a>
             </button>
           </section>
         </main>

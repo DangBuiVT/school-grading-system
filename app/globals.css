@@ -5,6 +5,7 @@
   --foreground: #171717;
   --primary-color: #fc9003;
   --secondary-color: #d86615;
+  --light-orange: #fce8d8;
   --font-montserrat: "Montserrat", sans-serif;
 }
 
@@ -16,6 +17,7 @@
   --font-montserrat: var(--font-montserrat);
   --color-primary: var(--primary-color);
   --color-secondary: var(--secondary-color);
+  --color-light-orange: var(--light-orange);
 }
 
 @media (prefers-color-scheme: dark) {
