@@ -44,7 +44,7 @@ export default async function WeeklySchedulePage() {
       console.error("Error fetching studies data:", studiesError);
       redirect("/error?message=Studies data not found");
     }
-    console.log(studiesData);
+    //console.log(studiesData);
     const { data: scheduleMorningData, error: scheduleMorningError } =
       await supabase
         .from("schedule")
@@ -65,12 +65,7 @@ export default async function WeeklySchedulePage() {
       console.error("Error fetching schedule data:", scheduleMorningError);
       redirect("/error?message=Schedule data not found");
     }
-    console.log(
-      "Schedule data for student %s %s: %o",
-      userData.lname,
-      userData.fname,
-      scheduleMorningData,
-    );
+
     const { data: scheduleAfternoonData, error: scheduleAfternoonError } =
       await supabase
         .from("schedule")
@@ -344,13 +339,7 @@ export default async function WeeklySchedulePage() {
       );
       redirect("/error?message=Schedule data not found");
     }
-    console.log(
-      "Schedule data for teacher %s %s: %o",
-      userData.lname,
-      userData.fname,
-      scheduleMorningData,
-      scheduleAfternoonData,
-    );
+
     return (
       <div className="flex flex-col bg-[var(--secondary-color)]">
         <div className="flex min-h-[calc(100vh-80px)] font-montserrat gap-10 p-6 border border-[var(--primary-color)] rounded-2xl m-4 bg-gray-50 ">

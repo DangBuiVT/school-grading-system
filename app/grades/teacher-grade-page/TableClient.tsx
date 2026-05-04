@@ -129,12 +129,7 @@ export default function TableClient({ combinedProps }: TableProps) {
           }
         }
       });
-      console.log(
-        totalScore,
-        totalWeight,
-        "Total score and weight for row",
-        rowIndex,
-      );
+
       // 4. Gán kết quả vào cột Average
       if (totalWeight > 0) {
         currentRow[avgColIndex] = (totalScore / totalWeight).toFixed(2);

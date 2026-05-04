@@ -10,10 +10,10 @@ export async function getNextClassDataAsTeacher(teacherId: string) {
   presetTime.setDate(now.getDate() - 4);
   presetTime.setHours(7, 0, 0);
   const dayOfWeek = getVNDayOfWeek(presetTime);
-  console.log(presetTime, "Current time for schedule check");
+  //console.log(presetTime, "Current time for schedule check");
 
   // 1. Get period info from your helper
-  console.log(dayOfWeek, "Day of week for schedule check");
+  //console.log(dayOfWeek, "Day of week for schedule check");
   // 1. Get period info from your helper
   const { nextPeriodInfo, nextPeriodInfos, countdownLabel, shift } =
     getDetailedPeriodInfo(presetTime);
@@ -78,10 +78,10 @@ export async function getNextClassDataAsClass(classId: string) {
   presetTime.setHours(6, 59, 59);
   const dayOfWeek = getVNDayOfWeek(presetTime);
 
-  console.log(presetTime, "Current time for schedule check");
+  //console.log(presetTime, "Current time for schedule check");
 
   // 1. Get period info from your helper
-  console.log(dayOfWeek, "Day of week for schedule check");
+  //console.log(dayOfWeek, "Day of week for schedule check");
   const { nextPeriodInfo, nextPeriodInfos, countdownLabel, shift } =
     getDetailedPeriodInfo(presetTime);
 
@@ -124,12 +124,7 @@ export async function getNextClassDataAsClass(classId: string) {
       const periodInfo = nextPeriodInfos.find(
         (period) => period.period === row.period_number,
       );
-      console.log(
-        periodInfo?.period === nextPeriodInfo.period
-          ? countdownLabel + " until next class"
-          : "No label",
-        "Countdown label for class schedule",
-      );
+
       return {
         teacherFName: row.teachers?.users?.fname,
         teacherLName: row.teachers?.users?.lname,

@@ -31,7 +31,6 @@ interface CompositeGradeProps {
 
 export default function TableClient({ compositeGrades }: CompositeGradeProps) {
   const tableData = compositeGrades;
-  console.log("Received composite grades data in TableClient:", tableData);
 
   const headerList = studentHeaderList;
 
