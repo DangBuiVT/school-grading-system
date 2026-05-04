@@ -90,10 +90,10 @@ export default async function StudentDashboard(profile: ProfileProps) {
 
   const totalGPA = allStats
     ? (
-        allStats.reduce((acc, curr) => acc + curr.subject_avg, 0) /
+        allStats.reduce((acc, curr) => acc + (curr.subject_avg ?? 0), 0) /
         allStats.length
       ).toFixed(2)
-    : "0.0";
+    : "0.00";
 
   return (
     <div className="p-6 bg-gray-50 min-h-[calc(100vh-80px)] font-montserrat">
@@ -227,7 +227,7 @@ export default async function StudentDashboard(profile: ProfileProps) {
                 </div>
 
                 <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center font-bold text-primary text-2xl">
-                  {topSubjectData.subject_avg.toFixed(2)}
+                  {topSubjectData.subject_avg?.toFixed(2)}
                 </div>
               </div>
             </div>
