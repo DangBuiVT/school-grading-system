@@ -60,7 +60,6 @@ export async function saveProfile(formData: FormData) {
   }
 
   if (role_id === 1) {
-    // Student role
     const { error: studentError } = await supabase
       .from("students")
       .insert({ id: user.id });
@@ -70,7 +69,6 @@ export async function saveProfile(formData: FormData) {
       redirect("/error?message=Failed to create student profile");
     }
   } else if (role_id === 2) {
-    // Teacher role
     const { error: teacherError } = await supabase
       .from("teachers")
       .insert({ id: user.id });

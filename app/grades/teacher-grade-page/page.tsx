@@ -50,8 +50,6 @@ subjects(id, subject_name)
     redirect("/error");
   }
 
-  //console.log(teachesData, "Teaches Data for TeacherGradePage");
-
   const { data: studiesData, error: studiesError } = await supabase
     .from("studies")
     .select(`students(users(id, fname, lname)), class_id`)
@@ -64,8 +62,6 @@ subjects(id, subject_name)
     console.error("Error fetching studies data:", studiesError);
     redirect("/error");
   }
-
-  //console.log(studiesData, "Studies Data for TeacherGradePage");
 
   const classSubjectPairProps = teachesData.map((item) => ({
     teacherId: user.id,
@@ -85,8 +81,6 @@ subjects(id, subject_name)
       subjectName: item.subjects?.subject_name,
     },
   }));
-
-  //console.log("Combined Props for TableClient:", classSubjectPairProps);
 
   return (
     <div className="flex flex-col bg-[var(--secondary-color)] font-montserrat">

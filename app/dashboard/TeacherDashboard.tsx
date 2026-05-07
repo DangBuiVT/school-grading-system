@@ -24,7 +24,6 @@ export default async function TeacherDashboard(profile: ProfileProps) {
   const supabase = await createClient();
   const nextClassData = await getNextClassDataAsTeacher(profile.id);
   const nextClasses = nextClassData?.classes ?? [];
-  console.log("Next class data:", nextClassData, "for teacher ID:", profile.id);
 
   const { data: schoolData, error: schoolError } = await supabase
     .from("schools")
@@ -57,8 +56,6 @@ export default async function TeacherDashboard(profile: ProfileProps) {
     return <div className="text-red-500">Failed to load teaches data.</div>;
   }
 
-  //console.log(teachesData);
-
   const { data: subjectData, error: subjectError } = await supabase
     .from("subjects")
     .select("*")
@@ -71,7 +68,6 @@ export default async function TeacherDashboard(profile: ProfileProps) {
     console.error("Error fetching subject data:", subjectError);
     return <div className="text-red-500">Failed to load subject data.</div>;
   }
-  console.log(nextClassData);
 
   const { data: classRankings } = await supabase
     .from("teacher_class_performance")
@@ -84,18 +80,12 @@ export default async function TeacherDashboard(profile: ProfileProps) {
     return <div className="text-red-500">Failed to load class rankings.</div>;
   }
 
-  const dayOfWeekString =
-    dayOfWeekMap[nextClassData?.dayOfWeek ?? 0] || "Unknown Day";
   return (
     <div className="p-6 bg-gray-50 min-h-[calc(100vh-80px)] font-montserrat">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* LEFT COLUMN: Profile Card (3/12 columns) */}
         <aside className="lg:col-span-4 xl:col-span-3">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-            {/* Profile Image Circle */}
-            <div className="w-24 h-24 bg-gray-200 rounded-full mb-4 overflow-hidden border-4 border-[var(--primary-color)]/10">
-              {/* <img src="/avatar.png" alt="Profile" /> */}
-            </div>
+            <div className="w-24 h-24 bg-gray-200 rounded-full mb-4 overflow-hidden border-4 border-[var(--primary-color)]/10"></div>
 
             <h2 className="text-xl font-bold text-gray-900">
               {profile.lname + " " + profile.fname}
@@ -104,7 +94,6 @@ export default async function TeacherDashboard(profile: ProfileProps) {
               {subjectData[0].subject_name} Teacher
             </p>
 
-            {/* Info Lines from your sketch */}
             <div className="w-full space-y-4 text-left border-t pt-6 text-[var(--secondary-color)]">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500 font-montserrat">School:</span>
@@ -123,9 +112,7 @@ export default async function TeacherDashboard(profile: ProfileProps) {
           </div>
         </aside>
 
-        {/* RIGHT COLUMN: Content (9/12 columns) */}
         <main className="lg:col-span-8 xl:col-span-9 space-y-6">
-          {/* SECTION: Next Classes */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-900">Next Classes</h3>
@@ -174,7 +161,6 @@ export default async function TeacherDashboard(profile: ProfileProps) {
             </div>
           </section>
 
-          {/* SECTION: Attendance Check Summary */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-6">
               Class Rankings

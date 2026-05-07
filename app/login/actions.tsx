@@ -15,9 +15,7 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    // error.message will be "Invalid login credentials"
     console.error("Error signing in:", error.message);
-    // Display friendly message to user: "Invalid email or password"
   }
 
   revalidatePath("/", "layout");
@@ -26,8 +24,6 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
   const supabase = await createClient();
-
-  /* Compare Password and Confirm password fields */
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirm-password") as string;
   if (password !== confirmPassword) {
@@ -44,10 +40,9 @@ export async function signup(formData: FormData) {
     },
   };
 
-  const { data, error } = await supabase.auth.signUp(signUpData);
+  const { error } = await supabase.auth.signUp(signUpData);
 
   if (error) {
-    console.log("Signup error, redirecting to /error");
     redirect("/error");
   }
 

@@ -5,14 +5,12 @@ import { CircleCheck, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 export default function LoginPage() {
-  /* Create a sign-in sign-up toggle */
   const [password, setPassword] = useState("");
   const [hasMeetPwCriteria, setHasMeetPwCriteria] = useState(false);
   const [pwMatch, setPwMatch] = useState(false);
 
   const handlePwChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    /* Ensure password longer or equal 8 characters, at least one capital letter and at least one digit */
     if (
       e.target.value.length >= 8 &&
       /[A-Z]/.test(e.target.value) &&
@@ -36,7 +34,6 @@ export default function LoginPage() {
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(!isVisible);
 
-    // Return the type and the toggle function
     const inputType = isVisible ? "text" : "password";
     const Icon = isVisible ? EyeOff : Eye;
 

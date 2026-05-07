@@ -1,6 +1,6 @@
 export interface HeaderConfig {
   label: string;
-  weight: number; // Hệ số điểm (0 cho các cột không tính điểm như tên, STT)
+  weight: number;
 }
 
 export const headerNamesForLongPeriodsSubjects: HeaderConfig[] = [
@@ -81,5 +81,4 @@ export const subjectClassification: Record<
   "Physical Education": "short",
   Art: "short",
   Music: "short",
-  // Add more subjects as needed
 };

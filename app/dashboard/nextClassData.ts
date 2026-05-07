@@ -10,11 +10,7 @@ export async function getNextClassDataAsTeacher(teacherId: string) {
   presetTime.setDate(now.getDate() - 4);
   presetTime.setHours(7, 0, 0);
   const dayOfWeek = getVNDayOfWeek(presetTime);
-  //console.log(presetTime, "Current time for schedule check");
 
-  // 1. Get period info from your helper
-  //console.log(dayOfWeek, "Day of week for schedule check");
-  // 1. Get period info from your helper
   const { nextPeriodInfo, nextPeriodInfos, countdownLabel, shift } =
     getDetailedPeriodInfo(presetTime);
 
@@ -24,7 +20,6 @@ export async function getNextClassDataAsTeacher(teacherId: string) {
 
   const periodNumbers = nextPeriodInfos.map((period) => period.period);
 
-  // 2. Query the schedule for that specific coordinate (limit to 2)
   const { data, error } = await supabase
     .from("schedule")
     .select(
@@ -48,7 +43,6 @@ export async function getNextClassDataAsTeacher(teacherId: string) {
       classes: [],
     };
 
-  // 3. Merge helper data with database data
   return {
     dayOfWeek,
     presetTime,
@@ -78,10 +72,6 @@ export async function getNextClassDataAsClass(classId: string) {
   presetTime.setHours(6, 59, 59);
   const dayOfWeek = getVNDayOfWeek(presetTime);
 
-  //console.log(presetTime, "Current time for schedule check");
-
-  // 1. Get period info from your helper
-  //console.log(dayOfWeek, "Day of week for schedule check");
   const { nextPeriodInfo, nextPeriodInfos, countdownLabel, shift } =
     getDetailedPeriodInfo(presetTime);
 
@@ -90,8 +80,6 @@ export async function getNextClassDataAsClass(classId: string) {
   const shiftType = shift as "morning" | "afternoon";
 
   const periodNumbers = nextPeriodInfos.map((period) => period.period);
-
-  // 2. Query the schedule for that specific coordinate
 
   const { data, error } = await supabase
     .from("schedule")
@@ -116,7 +104,6 @@ export async function getNextClassDataAsClass(classId: string) {
       data: [],
     };
 
-  // 3. Merge helper data with database data
   return {
     dayOfWeek,
     presetTime,

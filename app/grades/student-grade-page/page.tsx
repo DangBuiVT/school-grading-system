@@ -47,11 +47,6 @@ export default async function StudentGradePage() {
     redirect("/error");
   }
 
-  const compositeGradesData = gradesData.map((grade) => ({
-    ...grade,
-    average: grade.average ?? null,
-  }));
-
   return (
     <div className="flex flex-col bg-[var(--secondary-color)] font-montserrat">
       <h1 className="text-2xl font-bold my-4 flex justify-center items-center">

@@ -73,11 +73,10 @@ export default async function StudentDashboard(profile: ProfileProps) {
     .from("student_subject_averages")
     .select("subject_name, subject_avg")
     .eq("student_id", profile.id)
-    .order("subject_avg", { ascending: false }) // Sort by highest score
-    .limit(1) // Get only the best one
+    .order("subject_avg", { ascending: false })
+    .limit(1)
     .single();
 
-  // 2. Get the Overall GPA (Average of Averages)
   const { data: allStats } = await supabase
     .from("student_subject_averages")
     .select("subject_avg")
@@ -98,13 +97,9 @@ export default async function StudentDashboard(profile: ProfileProps) {
   return (
     <div className="p-6 bg-gray-50 min-h-[calc(100vh-80px)] font-montserrat">
       <div className="container mx-auto mt-20 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* LEFT COLUMN: Profile Card (3/12 columns) */}
         <aside className="lg:col-span-4 xl:col-span-3">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-            {/* Profile Image Circle */}
-            <div className="w-24 h-24 bg-gray-200 rounded-full mb-4 overflow-hidden border-4 border-[var(--primary-color)]/10">
-              {/* <img src="/avatar.png" alt="Profile" /> */}
-            </div>
+            <div className="w-24 h-24 bg-gray-200 rounded-full mb-4 overflow-hidden border-4 border-[var(--primary-color)]/10"></div>
 
             <h2 className="text-xl font-bold text-gray-900">
               {profile.lname + " " + profile.fname}
@@ -113,7 +108,6 @@ export default async function StudentDashboard(profile: ProfileProps) {
               Student
             </p>
 
-            {/* Info Lines from your sketch */}
             <div className="w-full space-y-4 text-left border-t pt-6 text-[var(--secondary-color)]">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500 font-montserrat">School:</span>
@@ -136,9 +130,7 @@ export default async function StudentDashboard(profile: ProfileProps) {
           </div>
         </aside>
 
-        {/* RIGHT COLUMN: Content (9/12 columns) */}
         <main className="lg:col-span-8 xl:col-span-9 space-y-6">
-          {/* SECTION: Next Classes */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-900">Next Classes</h3>
@@ -160,7 +152,6 @@ export default async function StudentDashboard(profile: ProfileProps) {
               </a>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Sample Class Card */}
               {nextClasses.length === 0 ? (
                 <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
                   <p className="text-sm text-gray-600">No more classes</p>
@@ -196,16 +187,12 @@ export default async function StudentDashboard(profile: ProfileProps) {
             </div>
           </section>
 
-          {/* SECTION: Attendance Check Summary */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-6">
               Personal Statistics
             </h3>
 
             <div className="flex items-center justify-around space-x-40">
-              {/* Student Number Input Box from your sketch */}
-
-              {/* On Time Stat */}
               <div className="flex items-center justify-center space-x-5">
                 <label className="text-sm font-bold text-secondary uppercase">
                   Overall Average Grade
@@ -215,7 +202,6 @@ export default async function StudentDashboard(profile: ProfileProps) {
                 </div>
               </div>
 
-              {/* Late Stat */}
               <div className="flex items-center justify-center space-x-5">
                 <div className="flex flex-col items-center justify-center space-y-2">
                   <label className="text-sm font-bold text-secondary uppercase">

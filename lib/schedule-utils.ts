@@ -16,7 +16,6 @@ export function getDetailedPeriodInfo(currentTime: Date) {
 
   let countdownLabel = "";
   if (next) {
-    // Calculate minutes until next class starts
     const [nextH, nextM] = next.start.split(":").map(Number);
     const nextDate = new Date(currentTime);
     nextDate.setHours(nextH, nextM, 0);
@@ -31,7 +30,7 @@ export function getDetailedPeriodInfo(currentTime: Date) {
 
   return {
     shift,
-    currentPeriodInfo: current, // Now returns { period: 1, start: "07:30", ... }
+    currentPeriodInfo: current,
     nextPeriodInfo: next,
     nextPeriodInfos: nextPeriods,
     countdownLabel,
@@ -40,6 +39,5 @@ export function getDetailedPeriodInfo(currentTime: Date) {
 
 export function getVNDayOfWeek(date: Date) {
   const day = date.getDay();
-  // JS: 0=Sun, 1=Mon... -> VN: 2=Mon, 3=Tue... 8=Sun
   return day === 0 ? 8 : day + 1;
 }

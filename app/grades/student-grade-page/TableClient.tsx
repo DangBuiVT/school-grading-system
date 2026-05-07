@@ -1,13 +1,6 @@
 "use client";
 
-import { createClient } from "@/supabase/client";
-import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
-import {
-  headerNamesForLongPeriodsSubjects,
-  subjectList,
-  studentHeaderList,
-} from "@/lib/teacher-grade-table-config";
+import { studentHeaderList } from "@/lib/teacher-grade-table-config";
 
 interface CompositeGradeProps {
   compositeGrades: {
@@ -37,7 +30,6 @@ export default function TableClient({ compositeGrades }: CompositeGradeProps) {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-montserrat">
       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        {/* Bảng hiển thị */}
         <div className="overflow-x-auto">
           <div className="max-h-[600px] overflow-y-auto">
             <table className="w-full text-left border-collapse">

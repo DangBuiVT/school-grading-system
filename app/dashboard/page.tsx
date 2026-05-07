@@ -16,7 +16,6 @@ export default async function DashboardPage() {
     return <div className="text-red-500">Failed to load user data.</div>;
   }
 
-  // Fetch profile with role name
   const { data: profile } = await supabase
     .from("users")
     .select("*, roles(role_name)")
@@ -25,10 +24,8 @@ export default async function DashboardPage() {
 
   const role = profile?.roles?.role_name;
 
-  // Render the specific dashboard based on the role found in database.ts
   if (role === "Teacher" && profile) return <TeacherDashboard {...profile} />;
   if (role === "Student" && profile) return <StudentDashboard {...profile} />;
 
-  // If role is not recognized, redirect to login or show an error
   redirect("/profile-setup");
 }

@@ -24,7 +24,6 @@ export default async function WeeklySchedulePage() {
   }
 
   if (userData.role_id === 1) {
-    /* Student schedule, with class is the fixed value*/
     const { data: studentData } = await supabase
       .from("students")
       .select("*")
@@ -44,7 +43,6 @@ export default async function WeeklySchedulePage() {
       console.error("Error fetching studies data:", studiesError);
       redirect("/error?message=Studies data not found");
     }
-    //console.log(studiesData);
     const { data: scheduleMorningData, error: scheduleMorningError } =
       await supabase
         .from("schedule")
@@ -163,7 +161,6 @@ export default async function WeeklySchedulePage() {
               <div
                 key={`${slot.day_of_week ?? "day"}-${slot.period_number ?? "period"}-${index}`}
                 style={{
-                  /* gridColumn: slot.day_of_week ? slot.day_of_week - 1 : undefined, */
                   gridColumn: slot.day_of_week ?? undefined,
                   gridRow: (slot.period_number ?? 0) + 1,
                 }}
@@ -262,7 +259,6 @@ export default async function WeeklySchedulePage() {
               <div
                 key={`${slot.day_of_week ?? "day"}-${slot.period_number ?? "period"}-${index}`}
                 style={{
-                  /* gridColumn: slot.day_of_week ? slot.day_of_week - 1 : undefined, */
                   gridColumn: slot.day_of_week ?? undefined,
                   gridRow: (slot.period_number ?? 0) + 1,
                 }}
@@ -286,7 +282,6 @@ export default async function WeeklySchedulePage() {
       </div>
     );
   } else if (userData.role_id === 2) {
-    /* Teacher schedule, with subject is the fixed value*/
     const { data: teacherData } = await supabase
       .from("teachers")
       .select("*")
@@ -308,7 +303,7 @@ export default async function WeeklySchedulePage() {
         classes (class_name)
         `,
         )
-        .eq("teacher_id", teacherData.id) // Direct filter is more accurate
+        .eq("teacher_id", teacherData.id)
         .eq("part_of_the_day", "morning")
         .order("period_number", { ascending: true });
 
@@ -323,7 +318,7 @@ export default async function WeeklySchedulePage() {
         classes (class_name)
         `,
         )
-        .eq("teacher_id", teacherData.id) // Direct filter is more accurate
+        .eq("teacher_id", teacherData.id)
         .eq("part_of_the_day", "afternoon")
         .order("period_number", { ascending: true });
 
@@ -510,7 +505,6 @@ export default async function WeeklySchedulePage() {
               <div
                 key={`${slot.day_of_week ?? "day"}-${slot.period_number ?? "period"}-${index}`}
                 style={{
-                  /* gridColumn: slot.day_of_week ? slot.day_of_week - 1 : undefined, */
                   gridColumn: slot.day_of_week ?? undefined,
                   gridRow: (slot.period_number ?? 0) + 1,
                 }}

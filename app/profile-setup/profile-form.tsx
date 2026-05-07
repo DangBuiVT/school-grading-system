@@ -82,7 +82,6 @@ export default function ProfileForm({ schools, roles, years }: Props) {
           ))}
         </select>
       </div>
-      {/* 2. Role Selection */}
       <div>
         <label className="block text-sm font-medium">Select Your Role</label>
         <select
