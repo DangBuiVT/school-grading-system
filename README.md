@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Advance School Management App
 
-## Getting Started
+Advance School Management App is a Next.js 16 application for managing school workflows with role-aware access, Supabase authentication, and separate student and teacher experiences.
 
-First, run the development server:
+## What It Does
+
+- Handles sign in and sign up with Supabase.
+- Redirects authenticated users to a role-based dashboard.
+- Supports profile setup for new users.
+- Provides grade and weekly schedule pages for both students and teachers.
+- Uses shared UI components for navigation, headers, tables, and sign out flows.
+
+## Core Routes
+
+- `/` landing page with login prompt and authenticated redirect.
+- `/login` sign in and sign up form.
+- `/profile-setup` profile completion flow.
+- `/dashboard` role-based dashboard entry point.
+- `/grades` grade management area.
+- `/weekly-schedule` schedule overview.
+- `/auth/callback` Supabase auth callback handler.
+
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Supabase auth and data access
+- Tailwind CSS 4
+- Lucide React icons
+- React Hot Toast
+
+## Local Setup
+
+1. Install dependencies.
+
+```bash
+npm install
+```
+
+2. Create a `.env.local` file with your Supabase credentials.
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+3. Start the development server.
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` starts the development server.
+- `npm run build` creates a production build.
+- `npm run start` runs the production server.
+- `npm run lint` runs ESLint.
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+- `app/` application routes, pages, and server actions.
+- `components/` shared layout, navigation, and table components.
+- `lib/` schedule and table configuration helpers.
+- `supabase/` browser and server client setup.
+- `types/` generated database types.
+- `public/` static assets.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Supabase Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The app expects Supabase-backed authentication and profile data. The current code references tables such as `users`, `roles`, `schools`, and `academic_years`.
 
-## Deploy on Vercel
+## Workflow
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- New users sign in or sign up on the login page.
+- Authenticated users are routed to the dashboard.
+- Users without a completed profile are sent to profile setup.
+- Dashboard content changes based on the stored role.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+This project can be deployed like any standard Next.js application. Make sure the production environment includes the Supabase environment variables above.
