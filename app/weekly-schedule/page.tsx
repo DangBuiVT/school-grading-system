@@ -1,5 +1,6 @@
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
+import ErrorPage from "../error/page";
 
 export default async function WeeklySchedulePage() {
   const supabase = await createClient();
@@ -20,7 +21,13 @@ export default async function WeeklySchedulePage() {
 
   if (userError) {
     console.error("Error fetching user data:", userError);
-    redirect("/login");
+    return (
+      <ErrorPage
+        title="Data Fetching Error"
+        errorMessage="Unable to fetch user data. Please try again later."
+        redirectAction={{ text: "Go to Login", link: "/login" }}
+      />
+    );
   }
 
   if (userData.role_id === 1) {
@@ -31,7 +38,16 @@ export default async function WeeklySchedulePage() {
       .single();
     if (!studentData) {
       console.error("No student data found for user:", user.id);
-      redirect("/error?message=Student data not found");
+      return (
+        <ErrorPage
+          title="Data Not Found"
+          errorMessage="Student data not found for your account."
+          redirectAction={{
+            text: "Go to Profile Setup",
+            link: "/profile-setup",
+          }}
+        />
+      );
     }
 
     const { data: studiesData, error: studiesError } = await supabase
@@ -41,7 +57,16 @@ export default async function WeeklySchedulePage() {
       .single();
     if (studiesError || !studiesData) {
       console.error("Error fetching studies data:", studiesError);
-      redirect("/error?message=Studies data not found");
+      return (
+        <ErrorPage
+          title="Data Not Found"
+          errorMessage="Student data not found for your account."
+          redirectAction={{
+            text: "Go to Profile Setup",
+            link: "/profile-setup",
+          }}
+        />
+      );
     }
     const { data: scheduleMorningData, error: scheduleMorningError } =
       await supabase
@@ -61,7 +86,16 @@ export default async function WeeklySchedulePage() {
 
     if (scheduleMorningError || !scheduleMorningData) {
       console.error("Error fetching schedule data:", scheduleMorningError);
-      redirect("/error?message=Schedule data not found");
+      return (
+        <ErrorPage
+          title="Data Not Found"
+          errorMessage="Schedule data not found or encountered an error. Please contact your administrator."
+          redirectAction={{
+            text: "Go to Dashboard",
+            link: "/dashboard",
+          }}
+        />
+      );
     }
 
     const { data: scheduleAfternoonData, error: scheduleAfternoonError } =
@@ -81,7 +115,16 @@ export default async function WeeklySchedulePage() {
 
     if (scheduleAfternoonError || !scheduleAfternoonData) {
       console.error("Error fetching schedule data:", scheduleMorningError);
-      redirect("/error?message=Schedule data not found");
+      return (
+        <ErrorPage
+          title="Data Not Found"
+          errorMessage="Schedule data not found or encountered an error. Please contact your administrator."
+          redirectAction={{
+            text: "Go to Dashboard",
+            link: "/dashboard",
+          }}
+        />
+      );
     }
     return (
       <div className="flex flex-col bg-[var(--secondary-color)]">
@@ -289,7 +332,16 @@ export default async function WeeklySchedulePage() {
       .single();
     if (!teacherData) {
       console.error("No teacher data found for user:", user.id);
-      redirect("/error?message=Teacher data not found");
+      return (
+        <ErrorPage
+          title="Data Not Found"
+          errorMessage="Teacher data not found for your account."
+          redirectAction={{
+            text: "Go to Profile Setup",
+            link: "/profile-setup",
+          }}
+        />
+      );
     }
 
     const { data: scheduleMorningData, error: scheduleMorningError } =
@@ -332,7 +384,16 @@ export default async function WeeklySchedulePage() {
         "Error fetching schedule data:",
         scheduleMorningError || scheduleAfternoonError,
       );
-      redirect("/error?message=Schedule data not found");
+      return (
+        <ErrorPage
+          title="Data Not Found"
+          errorMessage="Schedule data not found or encountered an error. Please contact your administrator."
+          redirectAction={{
+            text: "Go to Dashboard",
+            link: "/dashboard",
+          }}
+        />
+      );
     }
 
     return (

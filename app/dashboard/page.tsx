@@ -3,6 +3,7 @@ import { createClient } from "@/supabase/server";
 import TeacherDashboard from "./TeacherDashboard";
 import StudentDashboard from "./StudentDashboard";
 import { redirect } from "next/navigation";
+import ErrorPage from "../error/page";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -13,7 +14,13 @@ export default async function DashboardPage() {
 
   if (userError || !user) {
     console.error("Error fetching user:", userError);
-    return <div className="text-red-500">Failed to load user data.</div>;
+    return (
+      <ErrorPage
+        title="Authentication Error"
+        errorMessage="Unable to fetch user data. Please log in again."
+        redirectAction={{ text: "Go to Login", link: "/login" }}
+      />
+    );
   }
 
   const { data: profile } = await supabase

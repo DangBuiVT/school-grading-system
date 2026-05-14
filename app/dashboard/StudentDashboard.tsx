@@ -2,6 +2,8 @@ import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
 import { getNextClassDataAsClass } from "./nextClassData";
 import { dayOfWeekMap } from "@/lib/schedule-config";
+import ErrorPage from "../error/page";
+import ErrorNotice from "@/components/ErrorComponent";
 
 interface ProfileProps {
   created_at: string | null;
@@ -31,8 +33,15 @@ export default async function StudentDashboard(profile: ProfileProps) {
 
   if (schoolError) {
     console.error("Error fetching school data:", schoolError);
-    redirect("/login");
+    return (
+      <ErrorPage
+        title="Data Fetch Error"
+        errorMessage="Failed to load school information. Please set up your profile again."
+        redirectAction={{ text: "Go to Profile Setup", link: "/profile-setup" }}
+      />
+    );
   }
+
   const { data: studentData, error: studentError } = await supabase
     .from("students")
     .select("*")
@@ -40,8 +49,14 @@ export default async function StudentDashboard(profile: ProfileProps) {
     .single();
 
   if (studentError) {
-    console.error("Error fetching teacher data:", studentError);
-    return <div className="text-red-500">Failed to load student data.</div>;
+    console.error("Error fetching student data:", studentError);
+    return (
+      <ErrorPage
+        title="Data Fetch Error"
+        errorMessage="Failed to load student information."
+        redirectAction={{ text: "Go to Profile Setup", link: "/profile-setup" }}
+      />
+    );
   }
 
   const { data: studiesData, error: studiesError } = await supabase
@@ -51,8 +66,14 @@ export default async function StudentDashboard(profile: ProfileProps) {
     .single();
 
   if (studiesError) {
-    console.error("Error fetching teaches data:", studiesError);
-    return <div className="text-red-500">Failed to load studies data.</div>;
+    console.error("Error fetching studies data:", studiesError);
+    return (
+      <ErrorPage
+        title="Data Fetch Error"
+        errorMessage="Failed to load student information."
+        redirectAction={{ text: "Go to Profile Setup", link: "/profile-setup" }}
+      />
+    );
   }
 
   const { data: classData, error: classError } = await supabase
@@ -61,9 +82,16 @@ export default async function StudentDashboard(profile: ProfileProps) {
     .eq("id", studiesData.class_id)
     .single();
 
-  if (classError) {
+  if (classError || !classData) {
     console.error("Error fetching subject data:", classError);
-    return <div className="text-red-500">Failed to load class data.</div>;
+    return (
+      <ErrorPage
+        title="Data Fetch Error"
+        errorMessage="Failed to load class information
+      Please contact support if the issue persists."
+        redirectAction={{ text: "Go to Profile Setup", link: "/profile-setup" }}
+      />
+    );
   }
 
   const nextClassData = await getNextClassDataAsClass(classData.id);
@@ -81,11 +109,6 @@ export default async function StudentDashboard(profile: ProfileProps) {
     .from("student_subject_averages")
     .select("subject_avg")
     .eq("student_id", profile.id);
-
-  if (!topSubjectData || !allStats) {
-    console.error("Error fetching grade statistics");
-    return <div className="text-red-500">Failed to load grade statistics.</div>;
-  }
 
   const totalGPA = allStats
     ? (
@@ -132,96 +155,117 @@ export default async function StudentDashboard(profile: ProfileProps) {
 
         <main className="lg:col-span-8 xl:col-span-9 space-y-6">
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Next Classes</h3>
-              <h4 className="font-bold text-[var(--secondary-color)]">
-                {dayOfWeekMap[nextClassData?.dayOfWeek ?? 0]},{" "}
-                {nextClassData?.presetTime.toLocaleDateString()}
-                {", "}
-                {nextClassData?.presetTime.toLocaleTimeString([], {
-                  hour12: true,
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </h4>
-              <a
-                href="/weekly-schedule"
-                className="text-sm text-[var(--primary-color)] font-semibold hover:underline"
-              >
-                View Schedule
-              </a>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {nextClasses.length === 0 ? (
-                <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-                  <p className="text-sm text-gray-600">No more classes</p>
-                </div>
-              ) : (
-                nextClasses.map((classItem, index) => (
-                  <div
-                    key={`${classItem?.subjectName ?? "unknown"}-${index}`}
-                    className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex justify-between items-center"
+            {nextClassData ? (
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-gray-900">
+                    Next Classes
+                  </h3>
+                  <h4 className="font-bold text-[var(--secondary-color)]">
+                    {dayOfWeekMap[nextClassData?.dayOfWeek ?? 0]},{" "}
+                    {nextClassData?.presetTime.toLocaleDateString()}
+                    {", "}
+                    {nextClassData?.presetTime.toLocaleTimeString([], {
+                      hour12: true,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </h4>
+                  <a
+                    href="/weekly-schedule"
+                    className="text-sm text-[var(--primary-color)] font-semibold hover:underline"
                   >
-                    <div>
-                      <p className="font-bold text-gray-800">
-                        {classItem?.subjectName}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {classItem?.teacherGender === "male" ? "Mr. " : "Ms. "}
-                        {classItem?.subjectName === "English"
-                          ? (classItem?.teacherFName ?? "") +
-                            " " +
-                            (classItem?.teacherLName ?? "")
-                          : (classItem?.teacherLName ?? "") +
-                            " " +
-                            (classItem?.teacherFName ?? "")}{" "}
-                        • {classItem?.startTime}
-                      </p>
+                    View Schedule
+                  </a>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {nextClasses.length === 0 ? (
+                    <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+                      <p className="text-sm text-gray-600">No more classes</p>
                     </div>
-                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                      {classItem.countdown || "Upcoming"}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
+                  ) : (
+                    nextClasses.map((classItem, index) => (
+                      <div
+                        key={`${classItem?.subjectName ?? "unknown"}-${index}`}
+                        className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex justify-between items-center"
+                      >
+                        <div>
+                          <p className="font-bold text-gray-800">
+                            {classItem?.subjectName}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {classItem?.teacherGender === "male"
+                              ? "Mr. "
+                              : "Ms. "}
+                            {classItem?.subjectName === "English"
+                              ? (classItem?.teacherFName ?? "") +
+                                " " +
+                                (classItem?.teacherLName ?? "")
+                              : (classItem?.teacherLName ?? "") +
+                                " " +
+                                (classItem?.teacherFName ?? "")}{" "}
+                            • {classItem?.startTime}
+                          </p>
+                        </div>
+                        <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                          {classItem.countdown || "Upcoming"}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            ) : (
+              <ErrorNotice
+                title="Schedule Error"
+                errorMessage="Failed to load your next class information. Please check your schedule page for more details."
+              />
+            )}
           </section>
 
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-6">
               Personal Statistics
             </h3>
+            {!topSubjectData || !allStats ? (
+              <ErrorNotice
+                title="Data Error"
+                errorMessage="Student's grade data not available"
+              />
+            ) : (
+              <div className="relative">
+                <div className="flex items-center justify-around space-x-40">
+                  <div className="flex items-center justify-center space-x-5">
+                    <label className="text-sm font-bold text-secondary uppercase">
+                      Overall Average Grade
+                    </label>
+                    <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center font-bold text-primary text-2xl">
+                      {totalGPA}
+                    </div>
+                  </div>
 
-            <div className="flex items-center justify-around space-x-40">
-              <div className="flex items-center justify-center space-x-5">
-                <label className="text-sm font-bold text-secondary uppercase">
-                  Overall Average Grade
-                </label>
-                <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center font-bold text-primary text-2xl">
-                  {totalGPA}
-                </div>
-              </div>
+                  <div className="flex items-center justify-center space-x-5">
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <label className="text-sm font-bold text-secondary uppercase">
+                        Best Subject
+                      </label>
+                      <div className="text-lg font-semibold text-secondary">
+                        {topSubjectData.subject_name}
+                      </div>
+                    </div>
 
-              <div className="flex items-center justify-center space-x-5">
-                <div className="flex flex-col items-center justify-center space-y-2">
-                  <label className="text-sm font-bold text-secondary uppercase">
-                    Best Subject
-                  </label>
-                  <div className="text-lg font-semibold text-secondary">
-                    {topSubjectData.subject_name}
+                    <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center font-bold text-primary text-2xl">
+                      {topSubjectData.subject_avg?.toFixed(2)}
+                    </div>
                   </div>
                 </div>
-
-                <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center font-bold text-primary text-2xl">
-                  {topSubjectData.subject_avg?.toFixed(2)}
-                </div>
+                <button className="mt-8 w-full bg-[var(--primary-color)] text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
+                  <a href="/grades" className="block w-full h-full">
+                    Open Gradebook
+                  </a>
+                </button>
               </div>
-            </div>
-            <button className="mt-8 w-full bg-[var(--primary-color)] text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
-              <a href="/grades" className="block w-full h-full">
-                Open Gradebook
-              </a>
-            </button>
+            )}
           </section>
         </main>
       </div>

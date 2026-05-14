@@ -2,6 +2,8 @@ import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
 import { getNextClassDataAsTeacher } from "./nextClassData";
 import { dayOfWeekMap } from "@/lib/schedule-config";
+import ErrorPage from "../error/page";
+import ErrorNotice from "@/components/ErrorComponent";
 
 interface ProfileProps {
   created_at: string | null;
@@ -33,7 +35,13 @@ export default async function TeacherDashboard(profile: ProfileProps) {
 
   if (schoolError) {
     console.error("Error fetching school data:", schoolError);
-    redirect("/login");
+    return (
+      <ErrorPage
+        title="Data Fetching Error"
+        errorMessage="Unable to fetch school data."
+        redirectAction={{ text: "Go to profile setup", link: "/profile-setup" }}
+      />
+    );
   }
   const { data: teacherData, error: teacherError } = await supabase
     .from("teachers")
@@ -43,7 +51,12 @@ export default async function TeacherDashboard(profile: ProfileProps) {
 
   if (teacherError) {
     console.error("Error fetching teacher data:", teacherError);
-    return <div className="text-red-500">Failed to load teacher data.</div>;
+    return (
+      <ErrorPage
+        title="Data Fetching Error"
+        errorMessage="Unable to fetch teacher data. Please contact your administrator."
+      />
+    );
   }
 
   const { data: teachesData, error: teachesError } = await supabase
@@ -53,7 +66,12 @@ export default async function TeacherDashboard(profile: ProfileProps) {
 
   if (teachesError) {
     console.error("Error fetching teaches data:", teachesError);
-    return <div className="text-red-500">Failed to load teaches data.</div>;
+    return (
+      <ErrorPage
+        title="Data Fetching Error"
+        errorMessage="Unable to fetch teacher data. Please contact your administrator."
+      />
+    );
   }
 
   const { data: subjectData, error: subjectError } = await supabase
@@ -66,7 +84,12 @@ export default async function TeacherDashboard(profile: ProfileProps) {
 
   if (subjectError) {
     console.error("Error fetching subject data:", subjectError);
-    return <div className="text-red-500">Failed to load subject data.</div>;
+    return (
+      <ErrorPage
+        title="Data Fetching Error"
+        errorMessage="Unable to fetch teacher data. Please contact your administrator."
+      />
+    );
   }
 
   const { data: classRankings } = await supabase
@@ -77,7 +100,6 @@ export default async function TeacherDashboard(profile: ProfileProps) {
 
   if (!classRankings) {
     console.error("Error fetching class rankings");
-    return <div className="text-red-500">Failed to load class rankings.</div>;
   }
 
   return (
@@ -165,32 +187,43 @@ export default async function TeacherDashboard(profile: ProfileProps) {
             <h3 className="text-lg font-bold text-gray-900 mb-6">
               Class Rankings
             </h3>
+            {!classRankings || classRankings.length === 0 ? (
+              <ErrorNotice
+                title="No Data Available"
+                errorMessage="Class performance data is not available at the moment. Please check back later or contact your administrator."
+              />
+            ) : (
+              <div className="relative">
+                <div className="flex items-center justify-around space-x-40">
+                  <div className="w-auto p-6 rounded-4xl border-4 border-[#D4AF37] flex items-center justify-center font-bold text-[#D4AF37] text-2xl">
+                    {classRankings[0]?.class_name +
+                      " : " +
+                      classRankings[0]?.class_avg || "N/A"}
+                  </div>
+                  {classRankings[1] && (
+                    <div className="w-auto p-6 rounded-4xl border-4 border-[#A8A8A8] flex items-center justify-center font-bold text-[#A8A8A8] text-2xl">
+                      {classRankings[1]?.class_name +
+                        " : " +
+                        classRankings[1]?.class_avg || "N/A"}
+                    </div>
+                  )}
 
-            <div className="flex items-center justify-around space-x-40">
-              <div className="w-auto p-6 rounded-4xl border-4 border-[#D4AF37] flex items-center justify-center font-bold text-[#D4AF37] text-2xl">
-                {classRankings[0]?.class_name +
-                  " : " +
-                  classRankings[0]?.class_avg || "N/A"}
+                  {classRankings[2] && (
+                    <div className="w-auto p-6 rounded-4xl border-4 border-[#CD7F32] flex items-center justify-center font-bold text-[#CD7F32] text-2xl">
+                      {classRankings[2]?.class_name +
+                        " : " +
+                        classRankings[2]?.class_avg || "N/A"}
+                    </div>
+                  )}
+                </div>
+
+                <button className="mt-8 w-full bg-[var(--primary-color)] text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
+                  <a href="/grades" className="block w-full h-full">
+                    Open Gradebook
+                  </a>
+                </button>
               </div>
-
-              <div className="w-auto p-6 rounded-4xl border-4 border-[#A8A8A8] flex items-center justify-center font-bold text-[#A8A8A8] text-2xl">
-                {classRankings[1]?.class_name +
-                  " : " +
-                  classRankings[1]?.class_avg || "N/A"}
-              </div>
-
-              <div className="w-auto p-6 rounded-4xl border-4 border-[#CD7F32] flex items-center justify-center font-bold text-[#CD7F32] text-2xl">
-                {classRankings[2]?.class_name +
-                  " : " +
-                  classRankings[2]?.class_avg || "N/A"}
-              </div>
-            </div>
-
-            <button className="mt-8 w-full bg-[var(--primary-color)] text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
-              <a href="/grades" className="block w-full h-full">
-                Open Gradebook
-              </a>
-            </button>
+            )}
           </section>
         </main>
       </div>
